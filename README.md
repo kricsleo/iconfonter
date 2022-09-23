@@ -1,13 +1,13 @@
 # Iconfonter
 
-Download icons in [iconfont](https://www.iconfont.cn/) using your iconfont cookie, and generate TS interface files, iconify files, and so on.
+Download icons in [iconfont](https://www.iconfont.cn/) using your iconfont cookie, and generate TS interface, iconify configs, and so on.
 
 ## Feature
 
-- Download icons in svg format
-- Optimize svg by [svgo](https://github.com/svg/svgo)
-- Generate TS interface file
-- Support [iconify](https://github.com/antfu/vscode-iconify) extension
+- <span style="font-size: 20px">🔍</span> Download icons in svg format
+- <span style="font-size: 20px">⚙️</span> Optimize svg by [svgo](https://github.com/svg/svgo)
+- <span style="font-size: 20px">☕</span> Auto-Generate TS interface
+-  <span style="font-size: 20px">😃</span> Support [iconify](https://github.com/antfu/vscode-iconify) extension
 
 ## Usage
 
