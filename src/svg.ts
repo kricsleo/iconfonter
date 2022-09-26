@@ -1,15 +1,15 @@
 import path from 'path'
 import type { OptimizeOptions, OptimizedSvg } from 'svgo'
 import { optimize } from 'svgo'
-import type { Icon } from './helper'
-import { warn, writeFile } from './helper'
-import type { Options } from '.'
+import { writeFile } from './helper'
+import type { Options, Icon } from './types'
+import chalk from 'chalk'
 
 export function optimizeIcons(icons: Icon[], options?: OptimizeOptions) {
   const optimizedIcons = icons.map((icon) => {
     const optimized = optimize(icon.show_svg, options)
     if (optimized.error) {
-      warn(`Optimize icon [${icon.font_class}] error, ignore optimize.`, optimized.error)
+      console.log(chalk.yellow(`Optimize icon [${icon.font_class}] error, ignore optimize.`), optimized.error)
       return icon
     }
     else {

@@ -1,13 +1,6 @@
 import { promises as fs } from 'fs'
-import type { Icon } from './helper'
+import type { Icon, IconifyOptions } from './types'
 import { writeFile } from './helper'
-
-export interface IconifyOptions {
-  prefix?: string
-  width?: number
-  height?: number
-  path?: string
-}
 
 export async function writeIconify(icons: Icon[], options: IconifyOptions) {
   const iconJson = icons.reduce((all, icon) => {
@@ -20,7 +13,7 @@ export async function writeIconify(icons: Icon[], options: IconifyOptions) {
   }
   delete iconifyJson.path
   await Promise.all([
-    writeFile(options.path!, JSON.stringify(iconifyJson, null, 2)),
+    writeFile(options.path!, JSON.stringify(iconifyJson, null, 2) + '\r\n'),
     updateVSCodeSetting(options),
   ])
 }
@@ -42,5 +35,5 @@ export async function updateVSCodeSetting(options: IconifyOptions) {
       [ICONIFY_KEY]: [options.path!],
     }
   }
-  await writeFile(SETTING_PATH, JSON.stringify(settings, null, 2))
+  await writeFile(SETTING_PATH, JSON.stringify(settings, null, 2) + '\r\n')
 }

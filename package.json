@@ -32,7 +32,11 @@
       ]
     }
   },
+  "bin": {
+    "iconfonter": "bin/iconfonter.mjs"
+  },
   "files": [
+    "bin",
     "dist"
   ],
   "scripts": {

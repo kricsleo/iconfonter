@@ -1,12 +1,7 @@
 import { promises as fs } from 'fs'
 import path from 'path'
 import chalk from 'chalk'
-
-export interface Icon {
-  font_class: string
-  show_svg: string
-  project_id: string
-}
+import type { Icon, Options } from './types'
 
 export function varifyDuplicateIcon(icons: Icon[]) {
   const iconMap = icons.reduce((all, icon) => {
@@ -14,7 +9,7 @@ export function varifyDuplicateIcon(icons: Icon[]) {
     return all
   }, {} as Record<string, string[]>)
   Object.entries(iconMap).filter(t => t[1].length > 1)
-    .forEach(t => warn(`Found duplicate icon '${t[0]}' in projects ${t[1]}.`))
+    .forEach(t => console.warn(chalk.yellow(`Found duplicate icon '${t[0]}' between projects ${t[1]}.`)))
 }
 
 export function logResult(icons: Icon[], optimizedIcons?: Icon[]) {
@@ -23,10 +18,10 @@ export function logResult(icons: Icon[], optimizedIcons?: Icon[]) {
       t.reduce((total, cur) => total + cur.show_svg.length, 0),
     )
     const minifiedRatio = `${((1 - optimizedSize / size) * 100).toFixed(2)}%`
-    console.log(chalk.green(`${icons.length} icons downloaded. Minified by ${minifiedRatio} 🎉`))
+    console.log(chalk.green.bold(`${icons.length} icons downloaded. Minified by ${minifiedRatio} 🎉`))
   }
   else {
-    console.log(chalk.green(`${icons.length} icons downloaded 🎉`))
+    console.log(chalk.green.bold(`${icons.length} icons downloaded 🎉`))
   }
 }
 
@@ -51,3 +46,17 @@ export function mergeOptions<T extends { [k: string]: any }>(
   })
   return merged
 }
+
+export async function readConfig(configFile: string) {
+  let configFilePath: string
+  if (path.isAbsolute(configFile)) {
+    configFilePath = configFile;
+  } else {
+    configFilePath = path.join(process.cwd(), configFile);
+  }
+  let config: Options = (await import(configFilePath)).default;
+  if (typeof config !== 'object') {
+    throw Error(`Invalid config file "${configFilePath}"`);
+  }
+  return config;
+};

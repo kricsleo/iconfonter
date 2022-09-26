@@ -1,6 +1,6 @@
 # Iconfonter
 
-Download icons in [iconfont](https://www.iconfont.cn/) using your iconfont cookie, and generate TS interface, iconify configs, and so on.
+Download icons on [iconfont](https://www.iconfont.cn/) with your iconfont cookie, and generate TS interface, iconify configs, and so on.
 
 ## Feature
 
@@ -11,66 +11,112 @@ Download icons in [iconfont](https://www.iconfont.cn/) using your iconfont cooki
 
 ## Usage
 
-### Install
+### Use With CLi
+
+1. Create a config file named `iconfonter.config.js` in the root directory like this:
+(Or custom the filename and path yourself)
+
+```ts
+import { defineConfig } from 'iconfonter'
+
+export default defineConfig({
+  projects: ['<your_project_id_1>', '<your_project_id_2>'],
+  cookie: '<your_iconfont_cookie>',
+  // ...
+})
+
+```
+
+2. Run CLI as follows:
+
+```bash
+npx iconfonter
+
+// If a custom config filename or path is used,
+// it can be specified as an argument
+// npx iconfonter <custom_config_file>
+```
+
+### Use With Package
 
 ```bash
 npm i -D iconfonter
 ```
 
-### Use
-
 ```ts
 import { iconfonter } from 'iconfonter'
 
 iconfonter({
-  projects: ['project_id1', 'project_id2'],
-  cookie: 'your_iconfont_cookie'
-  //...
+  projects: ['<your_project_id_1>', '<your_project_id_2>'],
+  cookie: '<your_iconfont_cookie>',
+  // ...
 })
 ```
 
-By default, generating TS interface files is enabled, but iconify files are not enabled.
+### API
+
+By default, `dts` and `optimize` are enabled, but `iconify` is not.
 
 ```ts
-import { Options } from 'iconfonter'
+export interface Options {
+  /**
+   * Iconfont project ids.
+   */
+  projects: string[]
+  /**
+   * Iconfont cookie.
+   *
+   * https://www.iconfont.cn/
+   */
+  cookie: string
+  /**
+   * Local icon dir.
+   *
+   * @default icons
+   */
+  dir?: string
+  /**
+   * If optimize icon.
+   * 
+   * @default [DEFAULT_OPTIMIZE]
+   * @see https://github.com/svg/svgo
+   */
+  optimize?: false | OptimizeOptions
+  /**
+   * If generate ts interface file.
+   *
+   * @default [DEFAULT_TS]
+   */
+  dts?: false | DTSOptions
+  /**
+   * If generate iconify configs.
+   * @see https://github.com/antfu/vscode-iconify
+   *
+   * @default false
+   */
+  iconify?: boolean | IconifyOptions
+}
 
-// example of full options
-// see `Options` interface for detail.
-const options: Options = {
-  projects: ['project_id1', 'project_id2'],
-  cookie: 'your_iconfont_cookie',
-  dir: 'icons',
-  ts: {
-    name: 'IconName',
-    path: 'icon.ts',
-  },
-  optimize: {
-    plugins: [
-      {
-        name: 'removeAttrs',
-        params: {
-          attrs: '(style|class|version)',
-        },
-      },
-    ],
-  },
-  iconify: {
-    prefix: 'i:',
-    width: 24,
-    height: 24,
-    path: 'iconify.json',
-  }
+export interface DTSOptions {
+  name?: string
+  path?: string
+}
+
+export interface IconifyOptions {
+  prefix?: string
+  width?: number
+  height?: number
+  path?: string
 }
 ```
 
 ### Iconify
 
-If you want to use it with [iconify](https://github.com/antfu/vscode-iconify) extension, just set `iconify: true` or custom config `iconify: {/**  */}`. (Don't forget to install [iconify](https://github.com/antfu/vscode-iconify))
+If you want to use it with [iconify](https://github.com/antfu/vscode-iconify) extension, just set `iconify: true` or a custom config. (Don't forget to install [iconify](https://github.com/antfu/vscode-iconify))
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/antfu/vscode-iconify/main/screenshots/preview-1.png" alt="iconify 预览" />
 </p>
-
 
 ### Q & A
 
