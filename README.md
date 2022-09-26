@@ -32,9 +32,9 @@ export default defineConfig({
 ```bash
 npx iconfonter
 
-// If a custom config filename or path is used,
-// it can be specified as an argument
-// npx iconfonter <custom_config_file>
+# If a custom config filename or path is used,
+# it can be specified as an argument
+# npx iconfonter <custom_config_file>
 ```
 
 ### Use With Package
