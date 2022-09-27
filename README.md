@@ -7,7 +7,7 @@ Download icons on [iconfont](https://www.iconfont.cn/) with your iconfont cookie
 - <span style="font-size: 20px">🔍</span> Download icons in svg format
 - <span style="font-size: 20px">⚙️</span> Optimize svg by [svgo](https://github.com/svg/svgo)
 - <span style="font-size: 20px">☕</span> Auto-Generate TS interface
--  <span style="font-size: 20px">😃</span> Support [iconify](https://github.com/antfu/vscode-iconify) extension
+- <span style="font-size: 20px">😃</span> Support [iconify](https://github.com/antfu/vscode-iconify) extension
 
 ## Usage
 
@@ -127,6 +127,8 @@ Login in [iconfont](https://www.iconfont.cn) -> Go to your project -> Copy the `
 - What's my cookie?
 
 Login in [iconfont](https://www.iconfont.cn) -> Open browser DevTool -> Copy `cookie` from Request-Headers in any request
+
+### PR Welcome
 
 ## License
 
