@@ -17,13 +17,11 @@ Download icons on [iconfont](https://www.iconfont.cn/) with your iconfont cookie
 (Or custom the filename and path yourself)
 
 ```ts
-import { defineConfig } from 'iconfonter'
-
-export default defineConfig({
+module.exports = {
   projects: ['<your_project_id_1>', '<your_project_id_2>'],
   cookie: '<your_iconfont_cookie>',
   // ...
-})
+}
 
 ```
 
