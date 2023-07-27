@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs'
 import path from 'path'
 import chalk from 'chalk'
+import { pathToFileURL } from 'url'
 import type { Icon, Options } from './types'
 
 export function varifyDuplicateIcon(icons: Icon[]) {
@@ -54,7 +55,8 @@ export async function readConfig(configFile: string) {
   } else {
     configFilePath = path.join(process.cwd(), configFile);
   }
-  let config: Options = (await import(configFilePath)).default;
+  const configFileURL = pathToFileURL(configFilePath).toString()
+  let config: Options = (await import(configFileURL)).default;
   if (typeof config !== 'object') {
     throw Error(`Invalid config file "${configFilePath}"`);
   }
