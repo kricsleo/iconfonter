@@ -3,7 +3,7 @@ import https from 'https'
 
 export function downloadProjects(projects: string[], cookie: string) {
   return Promise.all(projects.map(projectId => fetchInIconfont(
-    `https://www.iconfont.cn/api/project/detail.json?pid=${projectId}}`,
+    `https://www.iconfont.cn/api/project/detail.json?pid=${projectId}`,
     cookie,
   )))
 }
