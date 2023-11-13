@@ -12,7 +12,7 @@ async function fetchInIconfont(url: string, cookie: string) {
   const options = {
     headers: {
       'Content-Type': 'application/json',
-      cookie,
+      Cookie: cookie,
     },
   }
   const data = await fetch(url, options)

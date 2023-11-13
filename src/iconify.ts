@@ -31,9 +31,7 @@ export async function updateVSCodeSetting(options: IconifyOptions) {
   }
   catch {
     // can't find settings.json
-    settings = {
-      [ICONIFY_KEY]: [options.path!],
-    }
+    settings = { [ICONIFY_KEY]: [options.path!] }
   }
   await writeFile(SETTING_PATH, JSON.stringify(settings, null, 2) + '\r\n')
 }

@@ -1,12 +1,15 @@
-import type { OptimizeOptions } from 'svgo'
+import type { Config as SvgoConfig } from 'svgo'
 import { downloadProjects } from './fetch'
-import { logResult, mergeOptions, varifyDuplicateIcon } from './helper'
-import { optimizeIcons, writeIcons } from './svg'
-import { writeDTS } from './ts'
+import { logResult, varifyDuplicateIcon } from './helper'
+import { tryOptimizeIcon } from './optimize'
+import { writeDTS } from './dts'
 import type { Options, IconifyOptions, DTSOptions, Icon } from './types'
 import { writeIconify } from './iconify'
+import path from 'pathe'
+import { writeFile } from './helper'
+import { defu } from 'defu'
 
-const DEFAULT_OPTIMIZE: OptimizeOptions = {}
+const DEFAULT_OPTIMIZE: SvgoConfig = {}
 
 const DEFAULT_DTS: DTSOptions = {
   name: 'IconName',
@@ -28,7 +31,7 @@ const DEFAULT_OPTIONS: Partial<Options> = {
 }
 
 export async function iconfonter(options: Options) {
-  const opts = mergeOptions<Options>(options, DEFAULT_OPTIONS as Options)
+  const opts = defu(options, DEFAULT_OPTIONS)
   const { projects, cookie, optimize, dts, iconify } = opts
 
   const projectInfos: Array<{ icons: Icon[] }> = await downloadProjects(projects, cookie)
@@ -37,15 +40,18 @@ export async function iconfonter(options: Options) {
   varifyDuplicateIcon(iconsRaw)
 
   const icons = optimize
-    ? optimizeIcons(iconsRaw, optimize)
+    ? iconsRaw.map(icon => tryOptimizeIcon(icon, optimize))
     : iconsRaw
 
-  await writeIcons(icons, opts)
+  await Promise.all(icons.map(icon => 
+    writeFile(path.resolve(options.dir!, `${icon.font_class}.svg`), icon.show_svg)
+  ))
+
   dts && await writeDTS(icons, dts)
 
   iconify && await writeIconify(
     icons,
-    iconify === true ? DEFAULT_ICONIFY : mergeOptions(iconify, DEFAULT_ICONIFY),
+    typeof iconify === 'object' ? defu(iconify, DEFAULT_ICONIFY) : DEFAULT_ICONIFY 
   )
   logResult(iconsRaw, optimize ? icons : undefined)
 }

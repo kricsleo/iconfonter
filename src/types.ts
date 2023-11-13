@@ -1,4 +1,4 @@
-import { OptimizeOptions } from "svgo"
+import type { Config as SvgoConfig } from "svgo"
 
 export interface Icon {
   font_class: string
@@ -41,7 +41,7 @@ export interface Options {
    *
    * @default [DEFAULT_OPTIMIZE]
    */
-  optimize?: false | OptimizeOptions
+  optimize?: false | SvgoConfig
   /**
    * If generate ts interface file.
    *

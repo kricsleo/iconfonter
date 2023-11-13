@@ -32,22 +32,6 @@ export async function writeFile(filePath: string, content: string) {
   await fs.writeFile(filePath, content)
 }
 
-export function mergeOptions<T extends { [k: string]: any }>(
-  options: T,
-  defaultOptions: T,
-): T {
-  const merged = { ...options }
-  Object.entries(defaultOptions).forEach(([k, v]: [keyof T, any]) => {
-    const type = typeof merged[k]
-    merged[k] = type === 'object'
-      ? mergeOptions(merged[k], v)
-      : type === 'undefined'
-        ? v
-        : merged[k]
-  })
-  return merged
-}
-
 export async function readConfig(configFile: string) {
   let configFilePath: string
   if (path.isAbsolute(configFile)) {
@@ -62,3 +46,7 @@ export async function readConfig(configFile: string) {
   }
   return config;
 };
+
+export async function writeIcon(icon: Icon, options: Options) {
+  await writeFile(path.resolve(options.dir!, `${icon.font_class}.svg`), icon.show_svg)
+}
