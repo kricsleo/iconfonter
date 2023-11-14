@@ -44,7 +44,7 @@
     "dev": "unbuild --stub",
     "lint": "eslint . --fix",
     "prepublishOnly": "nr build",
-    "release": "build && bumpp && npm publish",
+    "release": "npm run build && bumpp && npm publish",
     "start": "tsx src/index.ts",
     "test": "vitest",
     "typecheck": "tsc --noEmit"
