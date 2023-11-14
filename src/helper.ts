@@ -4,13 +4,17 @@ import chalk from 'chalk'
 import { pathToFileURL } from 'url'
 import type { Icon, Options } from './types'
 
-export function varifyDuplicateIcon(icons: Icon[]) {
-  const iconMap = icons.reduce((all, icon) => {
-    (all[icon.font_class] ||= []).push(icon.project_id)
-    return all
-  }, {} as Record<string, string[]>)
-  Object.entries(iconMap).filter(t => t[1].length > 1)
-    .forEach(t => console.warn(chalk.yellow(`Found duplicate icon '${t[0]}' between projects ${t[1]}.`)))
+export function deduplateIcons(icons: Icon[]) {
+  const iconMap = new Map<string, Icon>()
+  const uniqueIcons = icons.filter(icon => {
+    if(iconMap.has(icon.font_class)) {
+      console.warn(chalk.bgGreen.black(' Iconfonter '), chalk.yellow(`Found duplate icon \`${icon.font_class}\` between projects ${iconMap.get(icon.font_class)!.project_id} and ${icon.project_id}, using the former.`))
+      return false
+    }
+    iconMap.set(icon.font_class, icon)
+    return true
+  })
+  return uniqueIcons
 }
 
 export function logResult(icons: Icon[], optimizedIcons?: Icon[]) {
@@ -19,10 +23,10 @@ export function logResult(icons: Icon[], optimizedIcons?: Icon[]) {
       t.reduce((total, cur) => total + cur.show_svg.length, 0),
     )
     const minifiedRatio = `${((1 - optimizedSize / size) * 100).toFixed(2)}%`
-    console.log(chalk.green.bold(`${icons.length} icons downloaded. Minified by ${minifiedRatio} 🎉`))
+    console.log(chalk.bgGreen.black(' Iconfonter '), chalk.green.bold(`${icons.length} icons downloaded. Minified by ${minifiedRatio} 🎉`))
   }
   else {
-    console.log(chalk.green.bold(`${icons.length} icons downloaded 🎉`))
+    console.log(chalk.bgGreen.black(' Iconfonter '), chalk.green.bold(`${icons.length} icons downloaded 🎉`))
   }
 }
 
