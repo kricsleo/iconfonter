@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs'
 import path from 'path'
-import chalk from 'chalk'
+import c from 'picocolors'
 import { pathToFileURL } from 'url'
 import type { Icon, Options } from './types'
 
@@ -8,7 +8,7 @@ export function deduplateIcons(icons: Icon[]) {
   const iconMap = new Map<string, Icon>()
   const uniqueIcons = icons.filter(icon => {
     if(iconMap.has(icon.font_class)) {
-      console.warn(chalk.bgGreen.black(' Iconfonter '), chalk.yellow(`Found duplate icon \`${icon.font_class}\` between projects ${iconMap.get(icon.font_class)!.project_id} and ${icon.project_id}, using the former.`))
+      console.warn(c.bgGreen(' Iconfonter '), c.yellow(`Found duplate icon \`${icon.font_class}\` between projects ${iconMap.get(icon.font_class)!.project_id} and ${icon.project_id}, using the former.`))
       return false
     }
     iconMap.set(icon.font_class, icon)
@@ -23,10 +23,10 @@ export function logResult(icons: Icon[], optimizedIcons?: Icon[]) {
       t.reduce((total, cur) => total + cur.show_svg.length, 0),
     )
     const minifiedRatio = `${((1 - optimizedSize / size) * 100).toFixed(2)}%`
-    console.log(chalk.bgGreen.black(' Iconfonter '), chalk.green.bold(`${icons.length} icons downloaded. Minified by ${minifiedRatio} 🎉`))
+    console.log(c.bgGreen(' Iconfonter '), c.green(`${icons.length} icons downloaded. Minified by ${minifiedRatio} 🎉`))
   }
   else {
-    console.log(chalk.bgGreen.black(' Iconfonter '), chalk.green.bold(`${icons.length} icons downloaded 🎉`))
+    console.log(c.bgGreen(' Iconfonter '), c.green(`${icons.length} icons downloaded 🎉`))
   }
 }
 
@@ -53,4 +53,20 @@ export async function readConfig(configFile: string) {
 
 export async function writeIcon(icon: Icon, options: Options) {
   await writeFile(path.resolve(options.dir!, `${icon.font_class}.svg`), icon.show_svg)
+}
+
+export function mergeOptions<T extends { [k: string]: any }>(
+  options: T,
+  defaultOptions: T,
+): T {
+  const merged = { ...options }
+  Object.entries(defaultOptions).forEach(([k, v]: [keyof T, any]) => {
+    const type = typeof merged[k]
+    merged[k] = type === 'object'
+      ? mergeOptions(merged[k], v)
+      : type === 'undefined'
+        ? v
+        : merged[k]
+  })
+  return merged
 }

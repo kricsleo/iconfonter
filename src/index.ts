@@ -1,13 +1,12 @@
 import type { Config as SvgoConfig } from 'svgo'
 import { downloadProjects } from './fetch'
-import { logResult, deduplateIcons } from './helper'
+import { logResult, deduplateIcons, mergeOptions } from './helper'
 import { tryOptimizeIcon } from './optimize'
 import { writeDTS } from './dts'
 import type { Options, IconifyOptions, DTSOptions, Icon } from './types'
 import { writeIconify } from './iconify'
-import path from 'pathe'
+import path from 'path'
 import { writeFile } from './helper'
-import { defu } from 'defu'
 
 const DEFAULT_OPTIMIZE: SvgoConfig = {}
 
@@ -31,7 +30,7 @@ const DEFAULT_OPTIONS: Partial<Options> = {
 }
 
 export async function iconfonter(options: Options) {
-  const opts = defu(options, DEFAULT_OPTIONS)
+  const opts = mergeOptions<Options>(options, DEFAULT_OPTIONS as Options)
   const projectInfos: Array<{ icons: Icon[] }> = await downloadProjects(opts.projects, opts.cookie)
   const iconsRaw = deduplateIcons(projectInfos.map(project => project.icons).flat())
   const icons = opts.optimize 
@@ -43,7 +42,7 @@ export async function iconfonter(options: Options) {
   opts.dts && await writeDTS(icons, opts.dts)
   opts.iconify && await writeIconify(
     icons,
-    typeof opts.iconify === 'object' ? defu(opts.iconify, DEFAULT_ICONIFY) : DEFAULT_ICONIFY 
+    typeof opts.iconify === 'object' ? mergeOptions(opts.iconify, DEFAULT_ICONIFY) : DEFAULT_ICONIFY 
   )
   logResult(iconsRaw, opts.optimize ? icons : undefined)
 }
