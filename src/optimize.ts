@@ -3,7 +3,7 @@ import { optimize } from 'svgo'
 import type { Icon } from './types'
 import c from 'picocolors'
 
-export function tryOptimizeIcon(icon: Icon,  options?: SvgoConfig) {
+export function tryOptimizeIcon<T extends Icon>(icon: T,  options?: SvgoConfig) {
   try {
     const optimized = optimize(icon.show_svg, options)
     return { ...icon, show_svg: optimized.data }

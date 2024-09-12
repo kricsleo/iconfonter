@@ -4,9 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "pull-icon": "iconfonter"
+    "pull-icons": "iconfonter"
   },
   "dependencies": {
     "iconfonter": "workspace:^"
+  },
+  "devDependencies": {
+    "jiti": "^1.21.6"
   }
 }

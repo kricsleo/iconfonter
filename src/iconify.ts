@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs'
+import fs from 'node:fs/promises'
 import type { Icon, IconifyOptions } from './types'
 import { writeFile } from './helper'
 

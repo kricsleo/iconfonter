@@ -1,10 +1,11 @@
-import { promises as fs } from 'fs'
-import path from 'path'
+import fs from 'node:fs/promises'
+import fsSync from 'node:fs'
+import path from 'node:path'
 import c from 'picocolors'
 import { pathToFileURL } from 'url'
 import type { Icon, Options } from './types'
 
-export function deduplateIcons(icons: Icon[]) {
+export function deduplateIcons<T extends Icon>(icons: T[]): T[] {
   const iconMap = new Map<string, Icon>()
   const uniqueIcons = icons.filter(icon => {
     if(iconMap.has(icon.font_class)) {
@@ -36,13 +37,38 @@ export async function writeFile(filePath: string, content: string) {
   await fs.writeFile(filePath, content)
 }
 
-export async function readConfig(configFile: string) {
-  let configFilePath: string
-  if (path.isAbsolute(configFile)) {
-    configFilePath = configFile;
-  } else {
-    configFilePath = path.join(process.cwd(), configFile);
+export async function readConfig() {
+  const argConfigFile = process.argv[2]
+  // Prefer these config file paths in order
+  const preferConfigPaths = [
+    argConfigFile,
+    'iconfonter.config.ts',
+    'iconfonter.config.js',
+  ]
+    .filter(Boolean)
+    .map(relativePath => path.resolve(process.cwd(), relativePath))
+  const configFilePath = findFirstFile(preferConfigPaths)
+
+  if (!configFilePath) {
+    throw Error(`Not found iconfonter config file: ${argConfigFile ? argConfigFile : preferConfigPaths.join(' | ')}`)
   }
+
+  const isTs = configFilePath.endsWith('.ts')
+  if(isTs) {
+    try {
+      // use jiti to support import ts file
+      const { default: createJiti } = await import('jiti')
+      console.log('createJiti', createJiti)
+      const jiti = createJiti(import.meta.url, { interopDefault: true })
+      const config = await jiti.import(configFilePath, {}) as Options
+      return config
+    } catch (e) {
+      console.error(`Please install "jiti" to use the TypeScript config file: ${configFilePath}`)
+      console.error('E.g, npm install -D jiti')
+      throw e
+    }
+  }
+
   const configFileURL = pathToFileURL(configFilePath).toString()
   let config: Options = (await import(configFileURL)).default;
   if (typeof config !== 'object') {
@@ -69,4 +95,13 @@ export function mergeOptions<T extends { [k: string]: any }>(
         : merged[k]
   })
   return merged
+}
+
+function findFirstFile(paths: string[]) {
+  for (const path of paths) {
+    if (fsSync.existsSync(path)) {
+      return path
+    }
+  }
+  return null
 }

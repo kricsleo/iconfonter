@@ -1,5 +1,14 @@
 import type { Config as SvgoConfig } from "svgo"
 
+export interface Project {
+  project: {
+    id: string
+    name: string
+    prefix: string
+  }
+  icons: Icon[]
+}
+
 export interface Icon {
   font_class: string
   show_svg: string
@@ -24,6 +33,11 @@ export interface Options {
    * Iconfont project ids.
    */
   projects: string[]
+  /**
+   * If ignore the FontClass/Symbol prefix string in project settings.
+   * @default true
+   */
+  ignoreIconPrefix?: boolean
   /**
    * Iconfont cookie.
    *

@@ -1,7 +1,8 @@
-import type { RequestOptions } from 'https'
-import https from 'https'
+import type { RequestOptions } from 'node:https'
+import https from 'node:https'
+import { Project } from './types'
 
-export function downloadProjects(projects: string[], cookie: string) {
+export function downloadProjects(projects: string[], cookie: string): Promise<Project[]> {
   return Promise.all(projects.map(projectId => fetchInIconfont(
     `https://www.iconfont.cn/api/project/detail.json?pid=${projectId}`,
     cookie,
