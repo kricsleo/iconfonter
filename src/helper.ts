@@ -58,7 +58,6 @@ export async function readConfig() {
     try {
       // use jiti to support import ts file
       const { default: createJiti } = await import('jiti')
-      console.log('createJiti', createJiti)
       const jiti = createJiti(import.meta.url, { interopDefault: true })
       const config = await jiti.import(configFilePath, {}) as Options
       return config
