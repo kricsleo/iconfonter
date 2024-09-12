@@ -34,17 +34,19 @@ export async function iconfonter(options: Options) {
   const opts = mergeOptions<Options>(options, DEFAULT_OPTIONS as Options)
   const projectInfos = await downloadProjects(opts.projects, opts.cookie)
   const iconsRaw = deduplateIcons(projectInfos.map(project => 
-    project.icons.map(icon => 
-      ({ ...icon, full_name: `${project.project.prefix || ''}${icon.font_class}` })
-    )
+    project.icons.map(icon => ({ 
+      ...icon, 
+      name: options.ignoreIconPrefix 
+        ? icon.font_class 
+        : `${project.project.prefix || ''}${icon.font_class}` 
+    }))
   ).flat())
   const icons = opts.optimize 
     ? iconsRaw.map(icon => tryOptimizeIcon(icon, opts.optimize as SvgoConfig)) 
     : iconsRaw
-  await Promise.all(icons.map(icon => {
-    const filename = opts.ignoreIconPrefix ? icon.font_class : icon.full_name
-    return writeFile(path.resolve(process.cwd(), opts.dir!, `${filename}.svg`), icon.show_svg)
-  }))
+  await Promise.all(icons.map(icon =>
+    writeFile(path.resolve(process.cwd(), opts.dir!, `${icon.name}.svg`), icon.show_svg)
+  ))
   opts.dts && await writeDTS(icons, opts.dts)
   opts.iconify && await writeIconify(
     icons,

@@ -10,6 +10,7 @@ export interface Project {
 }
 
 export interface Icon {
+  name: string
   font_class: string
   show_svg: string
   project_id: string

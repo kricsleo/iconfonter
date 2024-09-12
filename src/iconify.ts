@@ -4,7 +4,7 @@ import { writeFile } from './helper'
 
 export async function writeIconify(icons: Icon[], options: IconifyOptions) {
   const iconJson = icons.reduce((all, icon) => {
-    all[icon.font_class] = { body: icon.show_svg }
+    all[icon.name] = { body: icon.show_svg }
     return all
   }, {} as Record<string, { body: string }>)
   const iconifyJson = {

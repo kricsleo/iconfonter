@@ -5,14 +5,14 @@ import c from 'picocolors'
 import { pathToFileURL } from 'url'
 import type { Icon, Options } from './types'
 
-export function deduplateIcons<T extends Icon>(icons: T[]): T[] {
+export function deduplateIcons(icons: Icon[]): Icon[] {
   const iconMap = new Map<string, Icon>()
   const uniqueIcons = icons.filter(icon => {
-    if(iconMap.has(icon.font_class)) {
-      console.warn(c.bgGreen(' Iconfonter '), c.yellow(`Found duplate icon \`${icon.font_class}\` between projects ${iconMap.get(icon.font_class)!.project_id} and ${icon.project_id}, using the former.`))
+    if(iconMap.has(icon.name)) {
+      console.warn(c.bgGreen(' Iconfonter '), c.yellow(`Found duplate icon \`${icon.name}\` between projects ${iconMap.get(icon.name)!.project_id} and ${icon.project_id}, using the former.`))
       return false
     }
-    iconMap.set(icon.font_class, icon)
+    iconMap.set(icon.name, icon)
     return true
   })
   return uniqueIcons
@@ -75,10 +75,6 @@ export async function readConfig() {
   }
   return config;
 };
-
-export async function writeIcon(icon: Icon, options: Options) {
-  await writeFile(path.resolve(options.dir!, `${icon.font_class}.svg`), icon.show_svg)
-}
 
 export function mergeOptions<T extends { [k: string]: any }>(
   options: T,
