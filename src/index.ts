@@ -36,7 +36,7 @@ export async function iconfonter(options: Options) {
   const iconsRaw = deduplateIcons(projectInfos.map(project => 
     project.icons.map(icon => ({ 
       ...icon, 
-      name: options.ignoreIconPrefix 
+      name: opts.ignoreIconPrefix 
         ? icon.font_class 
         : `${project.project.prefix || ''}${icon.font_class}` 
     }))
